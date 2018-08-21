@@ -1,0 +1,1293 @@
+\documentclass[12pt]{report}
+\usepackage[sc]{mathpazo}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\title{Representation Theory of Noetherian Categories}
+\author{Jennetta George}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{paralist}
+\usepackage[english]{babel}
+\usepackage{color}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\Mor}{Mor}
+\DeclareMathOperator{\Id}{Id}
+\DeclareMathOperator{\init}{init}
+\DeclareMathOperator{\Ob}{Ob}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\Mod}{Mod}
+\DeclareMathOperator{\Rep}{Rep}
+\DeclareMathOperator{\cod}{cod}
+\DeclareMathOperator{\C}{\mathcal{C}}
+\DeclareMathOperator{\D}{\mathcal{D}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\usepackage{dsfont}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{tikz-cd}
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\begin{document}
+\maketitle
+
+
+\renewcommand{\theenumi}{\alph{enumi}}
+
+
+
+\chapter{Introduction}
+
+
+In this paper, we examine the main results made by Sam and Snowden in their paper titled "A Grobner Approach to Combinatorial Categories" by studying the category of functors from a small category $\C$ to the category of Modules over a ring, \textbf{k}, $\Mod_\textbf{k}.$ The functor category from $\C$ to an arbitrary category $\D$ is the category whose objects are all functors from $\C$ to $\D$ and whose morphisms are all natural transformations between such functors. In particular, when we let $\D$ be the category $\Mod_\textbf{k}$ , the functor category from $\C$ to $\Mod_\textbf{k}$ is called the \textbf{representation category} of $\C$, denoted $\Rep_\textbf{k}(\C)$. 
+
+If we consider any group $G$, it is possible to view $G$ as a category $\C_G$ where the only object of $\C_G$ is $G$, and the morphisms of $\C_G$ is the underlying set of $G$, where composition of morphisms is given by the binary operation on $G$. In this way, we can see that categories are wonderful ways of generalizing abstract structures such as sets, rings, and groups. A \textbf{representation} of a group $G$ is a homomorphism $\phi$ from $G$ to the group of automorphisms of a $\textbf{k}$-module (or vector space, if \textbf{k} is a field), $M$, typically denoted $(\phi,M)$. Representation theory studies how groups behave by \textit{representing} their elements as linear transformations, thus making an abstract algebraic object more concrete by describing its elements in terms of structures that are easy to study and manipulate. In particular, when we think of $G$ as a category, we see that the functor category of $\C_G$ is equivalent to the representations of $G$. Thus, $\Rep_\textbf{k}(\C)$ is a generalization of representation theory, and we therefore call such functors $\C\to \Mod_\textbf{k}$ \textbf{representations} of the $\C$. 
+
+One category of particular interest to us is \textbf{FI}, the category of finite sets and injections. Representations of \textbf{FI} come up in the study of cohomology of configuration spaces in the work of Benson Farb, Thomas Church, Jordan S. Ellenberg, and Rohit Nagpal to encode sequences of representations of symmetric groups.**
+
+In the study of categories of representations, a basic question one may ask is whether or not a category is \textbf{noetherian}. We say a category of modules is noetherian if a submodule of any finitely generated module is finitely generated. The purpose of this paper, in coherence with the work of Sam and Snowden, is to develop general criteria for proving a category is noetherian. For example, the category \textbf{FI} is noetherian.
+
+A key point in proving noetherianity comes from the theory of Grobner bases. In this paper, we explore the methods Sam and Snowden use to develop an analogous study of Grobner theory on modules and apply it to representations of categories. In particular, classic Grobner bases can be used to prove that polynomial algebras are noetherian. Our main result (and proof) are analogous to this result. 
+
+
+
+
+\chapter{Posets and Noetherianity}
+\usetikzlibrary{decorations.text}
+\subsection{Poset Theory}
+\begin{definition}A \textbf{poset} is a set $X$ together with a binary relation $\leq$ satsifying the axioms of reflexivity, antisymmetry, and transitivity. That is, for all $x,y,z\in X$, $\leq$ must satisfy:
+\begin{compactitem}
+\item $x\leq x$
+\item If $x\leq y$ and $y\leq x$, then $x=y$
+\item If $x\leq y$ and $y\leq z$, then $x\leq z$.
+\end{compactitem}
+\end{definition}
+
+
+Elements $x,y$ of a poset $X$ are \textbf{comparable} if $x\leq y$ or $y\leq x$. A \textbf{chain} in $X$ is a subset $\{x_1,x_2,...\}$ of $X$ in which any pair of element $x_i,x_j$ are comparable. An \textbf{anti-chain} in $X$ is a subset $\{x_1,x_2,...\}$ of $X$ in which any two distinct elements are uncomparable, i.e. $x_i\not\leq x_j$ for all $i\neq j$.  
+
+\begin{exmp} For any poset $(X,\leq)$, the sets $\varnothing$, the empty set, and $\{x\}$, any signleton set, are both chains and anti-chains. 
+\end{exmp}
+
+\begin{exmp} Any subset of $\mathbb{R}$ is a chain, since all elements of $\mathbb{R}$ are comparable. 
+\end{exmp}
+
+
+
+
+\begin{exmp} 
+
+Let $X=\{1,2\}$. The power set of $X$ is the set of all subsets of $X$, $\mathcal{P}(X)=\{\varnothing, \{1\},\{2\},\{1,2\}\}$. The poset $(\mathcal{P}(X),\leq)$ where $\leq$ is given by inclusion, is demonstrated in Figure \ref{poset}. We see that the set $\{\{1\},\{2\}\}$ is an antichain in $(\mathcal{P}(X),\leq)$ and the set $\{\varnothing, \{1\},\{1,2\}\}$ is a chain.
+
+
+ 
+\end{exmp}
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}
+\label{poset}
+&\{1,2\}&\\
+\{1\}\arrow{ur}&&\{2\}\arrow{ul}\\
+&\varnothing\arrow{ul}\arrow{ur}&\\
+\end{tikzcd}
+\caption{$P(x)$ poset diagram for $X=\{1,2\}$}
+\end{figure}
+
+
+
+
+
+\subsection{Noetherian Posets}
+We say that $X$ satisfies the \textbf{ascending chain condition} (ACC) if every ascending chain in $X$ stabilizes. That is, given a chain $x_1\leq x_2\leq...$ in $X$, we have $x_i=x_{i+1}$ for all $i\geq j$, where $j$ is some index greater than zero. The \textbf{descending chain condition} (DCC) for a poset $X$ is the dual notion of the ACC on $X$, which requires that all decreasing sequences in $X$ stabilize. 
+
+
+
+
+An \textbf{ideal} in $X$ is a subset $I\subseteq X$ such that if $x\in I$ and $x\leq y$ then $y\in I$. There is a natural way to define a poset on subsets of any set by inclusion. That is, given a set $X$ with subsets $J, K\subseteq X$, we say that $J\leq K$ if $J\subseteq K$. We use the notation $\mathcal{J}(X)$ to denote the poset of ideals of $X$ ordered by inclusion. The \textbf{principal ideal} generated by $x\in X$ is $\{y|y\geq x\}$. We say that an ideal is \textbf{finitely generated} if it is a finite union of principal ideals.
+
+
+\begin{exmp} In the poset $(\mathbb{R},\leq)$, intervals of the form $(a,\infty)$ and $[a,\infty)$ are ideals. A subset of an ideal is not necessarily an ideal. The subset $U=[0,8)\cup(8,\infty)\subseteq [0,\infty)$ is not an ideal since $8\geq 0$ but $8\notin U$. In $\mathbb{R}$, ideals of the form $(a,\infty)$ are not finitely generated, because they cannot be written as a finite union of principal ideals. \end{exmp}
+
+ \theoremstyle{definition}
+\begin{definition} A poset $X$ is \textbf{noetherian} if every ideal of $X$ is finitely generated. There are many equivalent ways of saying a poset is noetherian, which are given by the following proposition.\end{definition}
+
+\begin{proposition} Given a poset $X$, the following conditions are equivalent:
+
+\begin{compactenum}
+\item $X$ is noetherian
+\item The poset $\mathcal{J}(X)$ satisfies ACC.
+\item Given a sequence $x_1,x_2,...$ in $X$, there exists $i<j$ such that $x_i\leq x_j$.
+\item  $X$ satisfies DCC and has no infinite anti-chains.
+\end{compactenum}
+\end{proposition}
+
+
+
+
+
+%We will give a detailed proof of the first three equivalences, and leave the last as an exercise, as it is not used in this paper.
+%$(1)\Rightarrow (2)$.  Assume every ideal in $X$ is finitely generated, and let $x_1,x_2,x_3,...$ be an infinite descending chain which never stabalizes. Notice that for each $x_i$, the set $\{x_j\mid j\leq i\}$ will be contained in the same ideal. Since the chain never stabalizes, there is some ideal $I$ containing all elements of the chain. Since there is no lower bound to the chain, this contadicts that $I$ is finitely generated. Thus $x_1,x_2,x_3,...$ eventually must stabalize. Now assume there exists some infinite anti chain $\{a_i\}$. Thus there are infinitely many $a_i$ which are pairwise non comparable, and thus not contained in the same principle ideal. Consider the ideal
+
+%\[I_a=\{y\mid y\geq a_1\}\cup\{y\mid y\geq a_2\}\cup....\]
+%This is an ideal in $X$, but is not finitely generated. Thus we have a contradiction, and $X$ has no infinite anti chains.
+
+%$(2)\Rightarrow (1)$.  Since $X$ has no anti chains, we can partition $X$ as follows:
+%\[X=\{x_{1_i}\}\cup\{x_{2_i}\}\cup ...\cup \{x_{n_i}\},\]
+%where $x_{i_j}\leq x_{i_{j+1}}$ for all $i,j$. For a partition $\{x_{i_j}\}$, since $X$ satisfies DCC we know that every descending chain stabilizes for some $x_{i_{k_i}}$. Thus every ideal can be written as a subset of the finitely generated ideal
+%\[I=\{y\mid y\geq x_{1_{k_1}}\}\cup \{y\mid y\geq x_{2_{k_2}}\}\cup ...\cup\{y\mid y\geq x_{1_{k_1}}\}.\] 
+%%%%^^^I dont think I said this part right, revisit it%%%
+
+%$(2)\Rightarrow (3)$. First notice that if $X$ is finite, then the result follows immediately since for some $j\geq 0$, $x_i=x_{i+1}$ for all $i\geq j$. So assume $X$ is infinite and all $x_i$ are distinct. Since there are no infinite anti chains, only finitely many $x_i$ are not comparable, so there exists infinitely many $i,j$ such that $x_i\leq x_j$. Assume all such $i>j$. This would contradict the DCC, so there must exist some $i<j$ such that $x_i\leq x_j$.
+%%%check the validity of this last statement%%%.
+
+%$(3)\Rightarrow (2)$. Assume $X$ does not satisfy DCC, so there exists a sequence $x_1\geq x_2\geq x_3\geq ...$ such that it never stabalizes. This means only finitely many duplicates of any element in the sequence. Create a new sequence by removing every duplicated element. This new sequence strictly decreasing and contradictions (3), thus $X$ satisfies DCC. That $X$ contains no infinite anti chains follows immediately from (3).
+
+
+\begin{proposition}\label{posetsequence} Let $X$ be a noetherian poset and let $x_1,x_2,\hdots$ be a sequence in $X$. Then there exists an infinite sequence of indicies 
+$i_1<i_2<\hdots$ such that $x_{i_1}\leq x_{i_2}\leq \hdots$.
+\end{proposition}
+\begin{proof}
+
+Let $I$ be the set of indicies such that $i\in I$ and $j>i$ implies that $x_i\nleq x_j$. $I$ cannot be infinite, otherwise there would exist some $i<i^\prime$ with $i,i^\prime\in I$ such that $x_i\leq x_{i^\prime}$ by noetherianity, contradicting the definition of $I$. Thus $I$ is finite, and letting $i_1$ be any number larger than all elements of $I$ gives us the sequence $x_{i_1}\leq x_{i_2}\leq \hdots.$
+
+\end{proof}
+
+
+
+
+\begin{proposition}\label{noetherian posets}
+Let $X$ and $Y$ be posets. Let $\mathcal{F}=\mathcal{F}(X,Y)$ be the set of all order preserving functions $f:X\to Y$ partially ordered by $f\leq g$ if $f(x)\leq g(x)$ for all $x\in X$. Then, we have the following:
+\begin{compactenum}
+\item If $X$ is noetherian and $Y$ satisfies ACC, then $\mathcal{F}$ satisfies ACC.
+\item If $\mathcal{F}$ satisfies ACC and $X$ is nonempty, then $Y$ satisfies ACC.
+\item If $\mathcal{F}$ satisfies ACC and $Y$ has two distinct comparable elements, then $X$ is noetherian.
+\end{compactenum}
+\end{proposition}
+\begin{proof}
+
+
+%We will only prove (c) as it is used later in this paper, and leave (a) and (b) to the reader.
+
+
+(a) Assume $X$ is noetherian and for a contradiction, suppose $\mathcal{F}$ does not satisfy ACC. For $f_i\in\mathcal{F}$, let $f_1<f_2<\hdots$ be an ascending chain. Then for each $i$, we may choose $x_i\in X$ such that $f_i(x_i)<f_{i+1}(x_i)$, and passing to a subseqience gives us that $x_1\leq x_2\leq \hdots$ by Proposition \ref{posetsequence}. Let $y_i=f_i(x_i)$. Then, since $f_i(x_i)<f_{i+1}(x_i)\leq f_{i+1}(x_{i+1})$, this gives us that $y_1<y_2<\hdots$ is an ascending sequence in $Y$, and thus $Y$ does not satisfy ACC, a contradiction.
+
+
+(b) Taking the assumptions from (b), we see that $Y$ embeds into $\mathcal{F}$ as the set of constant functions, giving us that $Y$ satisfies ACC since $\mathcal{F}$ does.
+
+
+(c) Suppose that $\mathcal{F}$ satisfies ACC and that $Y$ contains distinct elements $y_1<y_2$. Let $I$ be an ideal of $X$< and define the function $\chi_I\in \mathcal{F}$ by
+\begin{align*}\chi_I(x)=\begin{cases}y_2,\quad x\in I\\
+															y_1, \quad x\notin I.\end{cases}\end{align*}
+
+This construction gives rise to the function $I\mapsto \chi_I$ which embeds $\mathcal{J}(X)$ into $\mathcal{F}$, and thus $\mathcal{J}(X)$ satisfies ACC. Then by Proposition 2.0.1, $X$ is noetherian.
+\end{proof}
+
+%\section{Representation Theory}
+
+%The purpose of representation theory is to understand and examine how a group $G$ acts on vector spaces. Groups have the potential for being very abstract and hard to understand or describe in a way that allows us to know valuable information about it. Vector spaces, on the other hand, can be described using matrices which contain much more useful information. So even if we know very little about a group, we can use a vector space representation, $V$, of a group to see if $V$ has a non-trivial $G$-action stable subspace, and classify the cases when no such subspace exists. 
+
+
+
+
+
+ %\theoremstyle{definition}
+%\begin{definition}  Let $V$ be a vector space over some field $k$ (typically over $\mathbb{C}$ or $\mathbb{R}$), and $GL(V)$ the group of isomorphisms of $V$ into itself. (This is also known as the general linear group of $V$, seen as linear mappings from $V$ into $V$ with a linear inverse). Let $G$ be a group with identity element 1 and composition $(g,h)\mapsto gh$. We define a \textbf{linear representation} of $G$ in $V$ as a homomorphism $\rho$ from $G$ into $GL(V)$. 
+%\end{definition}
+%Vector spaces are characterized by their dimension, which will become very useful when we start viewing vector spaces as representations. 
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Category Theory}
+
+\section{Basic Definitions of Category Theory}
+
+
+
+  \theoremstyle{definition}
+\begin{definition} A \textbf{category} $\C$ consists of collections $\Ob(\C)$, the objects of $\C$ and $\Mor(\C)$, the morphisms, or arrows, of $\C$, such that the following properties hold:
+\begin{compactenum}[i.]
+\item for any arrows $f:A\to B,g:B\to C \in \Mor(\C)$ there is an arrow
+\[g\circ f:A\to C\]
+called the composite of $f$ and $g$,
+\item For each object $A\in \Ob(\C)$, the arrow
+\[1_A:A\to A\]
+exists, and is called the identity arrow of $A$.
+\item Composition of arrows is associative, that is
+\[h\circ (g\circ f)=(h\circ g)\circ f\]
+for all $f:A\to B, g:B\to C, h:C\to D$, and 
+\item $f\circ 1_A=f=1_b\circ f$ for all $f:A\to B$.
+\end{compactenum}
+\end{definition}
+Thus, in category theory it is not the objects themselves that are of the main interest, but rather the morphisms between the objects that we are most concerned with. A morphism between categories is called a \textbf{ functor}, and it has the following properties.
+
+
+ \theoremstyle{definition}
+\begin{definition} A \textbf{functor}
+\[F:\C\to\D\]
+
+between categories $\C$ and $\D$ is a mapping of objects to objects and arrows to arrows, such that
+\begin{compactenum}[i.]
+\item $F(f:A\to B)=F(f):F(A)\to F(B)$,
+\item $F(1_A)=1_{F(A)}$,
+\item $F(g\circ f)=F(g)\circ F(f)$.
+\end{compactenum}
+\end{definition}
+
+ \theoremstyle{definition}
+\begin{definition}If $F$ and $G$ are functors between categories $\C$ and $\D$, then a \textbf{natural transformation} $\eta:F\to G$ is a family of morphisms that satisfies the requirements:
+\begin{compactenum}[i.]
+\item $\eta$ associates to every object $X\in\Ob(\C)$ a morphism $\eta_X:F(X)\to G(X)$ between objects of $\D$, where $\eta_X$ is called the component of $\eta$ at $X$.
+\item Components of $\eta$ must satisfy the following commutative diagram for every morphism $f:X\to Y\in \Mor(\C)$:
+\end{compactenum}
+\end{definition}
+
+\begin{center}
+\begin{tikzcd}
+ F(X)\arrow[r,"\eta_X"]\arrow[d,"F(f)" swap]&G(X)\arrow[d,"G(f)"]\\
+F(Y)\arrow[r,"\eta_Y"] &G(Y)
+\end{tikzcd}
+\end{center}
+
+That is, $\nu_Y\circ F(f)=G(f)\circ \nu_X$.
+
+
+
+\begin{definition} A functor $F:\C\to\D$ is \textbf{essentially surjective} if each object $y$ in $\D$ is isomorphic to an object $Fx$ for an object $x$ in $\C$.\end{definition}
+
+
+\begin{exmp}
+A very important functor in category theory is the \textbf{Forgetful Functor}, $\phi:\C\to \textbf{Set}$. For example, let the category $\C$ be the category of all ordered sets $(S,\leq)$ (where $\leq$ is a given total order on $S$), with order preserving injections as morphisms. Then $\phi$ sends every ordered set $(S,\leq)$ to its underlying set $S$ in \textbf{Set}, "forgetting" the ordering, and sends morphisms to themself. Clearly, the forgetful functor $\phi:\textbf{OI}\to\textbf{FI}$, where $\textbf{OI}$ is the category of finite ordered sets with order preserving injections as morphisms, and $\textbf{FI}$ is the category of finite sets with injections as morphisms, is an essentially surjective functor. 
+\end{exmp}
+
+
+ \theoremstyle{definition}
+\begin{definition} A category $\C$ is \textbf{small} if both the collection of objects and the collection of morphisms of $\C$ are sets. If not, $\C$ is \textbf{large}. A category $\C$ is called \textbf{locally small} if for all objects, $X,Y\in \C$, the collection $\Hom_{\C}(X,Y)=\{f\in Ob(\C)|f:X\to Y\}$ is a set.\end{definition}
+
+
+\begin{exmp} Any finite category is a small category. The category \textbf{Sets}$_{\textbf{fin}}$ of finite sets and functions is a \textit{essentially} small category, meaning that it is equivalent to a small category. A category being essentially small allows us to apply many of the same results to it that we could a small category.  The category \textbf{Sets} of all sets is not small, since by Russel's paradox we know the collection of all sets cannot be a set. However, \textbf{Sets} is locally small, since $\Hom_{\textbf{Sets}}(X,Y)=Y^X$ is the $set$ of all functions from $X$ to $Y$.\end{exmp}
+
+
+
+
+
+ \theoremstyle{definition}
+\begin{definition} Given a category $\C$ and an object $x$ of $\C$, we can define the \textbf{slice category} $\C_x$ over object $x\in \C$ as the category with
+
+\begin{compactenum}[i.]
+\item objects as arrows $f:y\to x$ for $y\in Ob(\C)$
+\item morphisms as arrows $g:y\to y^\prime$ from $f:Y\to X$ to $f^\prime:y^\prime \to x$ such that $f^\prime \circ g=f$.
+\end{compactenum}
+\end{definition}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}[column sep=1.5em]
+ & x  \\
+y\arrow{ur}{f}  \arrow{rr}{g} && y^\prime \arrow{ul}[swap]{f^\prime}
+\end{tikzcd}
+  \caption{Commutative diagram as an arrow in $C_x$}
+\label{fig:my graph}
+\end{figure}
+
+
+
+We say $\C$ is \textbf{directed} if every self map in $\C$ is the identity. Let $|\C|$ denote the set of isomorphism classes in $\C$. If $\C$ is essentially small and directed, then $|\C|$ may be considered as a poset with binary relation denoted $x\leq y$ if there exists morphism $x\to y\in \Mor(\C)$. We say $\C$ is \textbf{Hom-finite} if $\Hom_{\C}(x,y)$ is finite for all $x,y\in\Ob(\C)$.
+
+
+
+
+
+
+\subsection{Yoneda Lemma}
+
+
+Let $\C$ be a locally small category, and let $x_0$ be an object of $\C$. Then $x_0$ gives rise to the functor
+\[\Mor(x_0,-)\] 
+from $\C\to$ \textbf{Set}, which sends an object $y$ of $\C$ to the set of morphism $\Mor(x_0,y)$ and sends a morphism $f:x\to y$ to the morphism $f\circ -$ that sends a morphism $g$ in $\Hom(x_0, x)$ to the morphism $f\circ g$ in $\Hom(x_0,y)$. We call $\Mor(x_0,-)$ the functor "represented by $x_0$". Thus, a functor is \textbf{representable} if it is isomorphic to a functor of this form.
+
+Since \textbf{Set} is a category we have a good understanding of, instead of trying to understand the category $\C$, perhaps it would be easier to study the categories of all functors of $\C\to$\textbf{Set}. This idea leads us to the following important Lemma:
+
+\begin{lemma}\label{Yoneda}\textbf{(Yoneda) }
+Let $F$ be an arbitrary functors from $\C\to$\textbf{Set}. For each object $x_0$ of $\C$, the set of natural transofrmations from $\Mor(x_0,-)$ to $F$ is isomorphic to $F(x_0).$ In other words,
+\begin{equation}\label{nat}\text{Nat}(\Mor(x_0,-),F)\cong F(x_0).\end{equation}
+\end{lemma}
+
+\begin{proof}
+Let $\phi$ be a natural transformation from $\Mor(x_0,-)\to F$. To prove the isomorphism of equation \ref{nat}, we will demonstrate that $\phi$ is completely determined by where its component $\phi_{x_0}$ sends the identity morphism id$_{x_0}$. Consider the commutative diagram
+
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}
+id_{x_0}\arrow{d} & \Mor(x_0,x_0) \arrow{rr}{\Mor(x_0,f)} \arrow[swap]{d}{\phi_{x_0}} && \Mor(x_0,x) \arrow{d}{\phi_x} \\
+\phi_{x_0}(id_{x_0})=u& F(x_0)\arrow{rr}{Ff}  && F(x) 
+\end{tikzcd}
+\end{figure}
+
+For each morphism $f:x_0\to x$, we can see from above that $\phi_x(f)=(Ff)(u)$. Since every element $u\in F(x_0)$ will define such a natural transformation, this establishes the isomorphism.
+
+\end{proof}
+
+
+
+
+Studying a category this way is similar to, and in fact generalizes, studying a ring by investigating the modules one can form over that ring. We can think of the ring as analogous to the category $\C$, and the category of modules over the ring as the categhory of functors $\C\to$ \textbf{Set} (we will discuss this concept in more detail in the proceeding chapter).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Categorical Properties}
+
+
+ \theoremstyle{definition}
+\begin{definition}  An \textbf{initial} object of $\C$ is an object $I\in \C$ such that for every object $C\in \C$, there exists a unique morphism $I\to C$. Dually, a \textbf{terminal} object is an object $T\in \C$ such that for every object $C\in \C$, there exists a unique morphism $C\to T$. \end{definition} If an object is both initial and terminal, then it is called a \textbf{zero object}. We call a category with a zero object a pointed category. 
+
+
+\begin{exmp} In \textbf{Set}, the only initial object is the empty set, since the empty morphism $\varnothing\to C$ is the unique morphism between the empty set and any other set, $C\in$ \textbf{Set}. The terminal objects in \textbf{Set} are the singleton sets, sets which contain only one element. Every set $C$ may be mapped uniquely to a singleton $\{*\}$ by mapping every element $c\in C$ to $*\in\{*\}$. Since the initial object is not equal to the terminal objects, \textbf{Set} has no zero object. \end{exmp}
+
+\begin{exmp}In the category of groups, \textbf{Grp}, every trivial group $E_i$ is a zero object. Indeed every group can be mapped uniquely into $E_i$ uniquely be sending every element to the identity element $e_i$ of $E_i$, and $E_i$ can be mapped uniquely into any group $G$ by sending $e_i$ to the identity element of $G$.\end{exmp}
+
+\begin{remark} Many properties in category theory have a corresponding \textbf{dual} property. Thus, given a statement for a category $\C$, when we switch places of the source and target for each morphism and switch the order of the composition of two morphisms, the resulting statement is the dual statement for the dual category, $\C^{op}$. In the last definition, it is easy to see that being an initial object in a category $\C$ is dual to being a terminal object in the category $\C^{op}$. 
+\end{remark}
+
+ \theoremstyle{definition}
+\begin{definition} 
+For a category $\C$, the \textbf{product} of two elements $A,B\in \C$ is an object $A\times B$ together with the morphisms $\pi_a:A\times B\to A, \pi_b:A\times B \to B$ that satisify the universal property: for every object $X$ and pair of morphisms $f_a:X\to A,f_b:X\to B$, there exists a unique morphism $f:X\to A\times B$ such that $\pi_b\circ f=f_b$ and $\pi_a\circ f= f_a.$. The dual of a product is a \textbf{coproduct}. 
+\end{definition}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}[row sep=huge]
+  & X\ar[dl,"f_{a}",swap,sloped] \ar[dr,"f_{b}",sloped] \ar[d,dashed,"f"] & \\
+A & A\times B\ar[l,"\pi_{a}"] \ar[r,"\pi_{b}",swap] & B
+\end{tikzcd}
+  \caption{Universal mapping property of the product of $A$ and $B$.}
+\end{figure}
+
+Products are used to generalize the notion of direct products of groups and cartesian products of sets, while coproducts are categorical constructions of disjoint unions of sets and direct sums of abelian groups, modules and vector spaces. When the two concepts overlap, for instance in the case of abelian groups, we get the notion of a \textbf{biproduct}.
+
+
+\begin{definition} Let $\C$ be a category and $f:x\to y$ a morphism in $\C$. The morphism $f$ is called a \textbf{left zero morphism} (dually \textbf{right zero morphism}) if for any object $w$ in $\C$ and any morphisms $g,h:w\to x$, $fg=fh$.
+\end{definition}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+w	\arrow[r,shift left,"g"]\arrow[r,swap,shift right,"h"]				&x				\arrow[r,"f"]						&y
+\end{tikzcd}
+\caption{Left Zero Morphism}
+\end{figure}
+
+
+We say a category has \textbf{zero morphisms} when, for every two objects $a$ and $b$ in $\C$, there is a fixed morphisms 
+\[0_{ab}:a\to b\]
+such that for all objects $x,y,z$ in $\C$ and all morphisms $f:y\to z,g:x\to y$, we have that $f0_{xy}=0_{xz},0_{yz}g=0_{xz}$, and $f0_{xy}=0_{yz}g$. In other words, the following diagram commutes.
+
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+x\arrow[r,"0_{xy}"]\arrow[d,swap,"g"]\arrow[dr,"0_{xz}"] 		&y\arrow[d,"f"]\\
+y\arrow[r,swap,"0_{yz}"]																												&z
+\end{tikzcd}
+\caption{Commutative Zero Morphism Diagram}
+\end{figure}
+
+
+In order to define the following property, we must consider a cateogry $\C$ which has zero morphisms.
+
+\begin{definition} Let $f:x\to y$ be a morphism in $\C$. We define the \textbf{kernel} of $f$ (dually \textbf{cokernel}) to be the \textit{equalizer} of $f$ and the zero morphism $0_{xy}$, i.e. the kernel of $f$ is the object $\Ker(f)$ along with morphisms $k:\Ker(f)\to x$ such that $fk=0_{xy}$.
+
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+\Ker(f)		\arrow[r,"k"]			&x				\arrow[r,shift left,"f"]\arrow[r,swap,shift right,"0_{xy}"]						&y
+\end{tikzcd}
+\caption{Kernel of $f$}
+\end{figure}
+
+
+\end{definition}
+
+The following definition generalizes the idea of injective maps of sets (dually: surjective maps).
+
+\begin{definition}
+A morphism $f:x\to y$ in a category $\C$ is said to be a \textbf{monomorphism}  (dual: \textbf{epimorphism})  if for every object $z$ and every pair of morphisms $g,h:z\to x$, we have
+\[(fg=fh) \implies (g=h).\]
+\end{definition}
+
+\begin{remark} The monomorphisms in \textbf{Set} are precisely the injective functions and epimorphisms are precisely surjective functions, as stated above. Therefore every isomorphism is both a monomorphism and an epimorphism. However, in a general category, a morphism that is both a monomorphism and epimorphism is not necessarily an isomorphism. Take, for example, the category of rings and ring homomorphisms, \textbf{Rng}. The inclusion 
+\[\mathbb{Z}\xhookrightarrow{\iota}\mathbb{Q}\]
+is a monomorphism and an epimorphism, but is clearly not an isomorphism.
+\end{remark}
+
+
+
+
+We say a monomorphism $f:a\to b$ is \textbf{normal} if it is the kernel of some morphism $g:b\to c$. This concept generalizes the concept of \textit{normal subgroup inclusions}. We say a category is normal if every monomorphism is normal, and \textbf{binormal} if all monomorphisms are normal and epimorphisms are conormal. 
+
+
+
+
+
+
+\subsection{Abelian Categories}
+
+\begin{definition} We say a category $\C$ is \textbf{abelian} if
+\begin{compactenum}[i.]
+\item it has a zero object,
+\item it has all binary biproducts,
+\item it has all kernels and cokernels, and
+\item it is binormal.
+\end{compactenum}
+\end{definition}
+
+
+This definition is equivalent to the following definition, which we build up piecewise:
+
+\begin{compactitem}
+\item A category is \textbf{preadditive} if all Hom-sets are abelian groups and composition of morphisms is bilinear.
+\item A preadditive category is \textbf{additive} if every finite set of objects has a biproduct.
+\item An additive category is \textbf{preabelian} if every morphism has both a kernel and cokernel.
+\item Finally, we say a preabilian category is \textbf{abelian} if every monomorphism and every epimorphism is normal. 
+\end{compactitem}
+
+The enriched structure that the second definition gives us is a consequence of the first threee axioms of the first definition. 
+
+
+
+Abelian categories are of particular interest to us because they are very \textit{stable} categories and have many nice features that we will explore in this section. The most common example of an abelian category is \textbf{Ab}, the category of all abelian groups, as well as $\textbf{Ab}_{\text{fin}}$, the category of all finite abelian groups. However, the following examples are most relevant to the content of this paper.
+
+\begin{exmp} For a ring \textbf{k}, the category of all left (or right) modules over \textbf{k}, denoted $\Mod_\textbf{k}$, is an abelian category. We check the axioms of an abelian category:
+\begin{compactitem}
+\item The zero object in $\Mod_\textbf{k}$ is the \textbf{zero module}, O, since for any module $M$ there are unique ring homomorphisms $\iota_x:O\to M$ and $0_x:M\to O$.
+\item For any two modules $M,N$ in $\Mod_\textbf{k}$, the biproduct generalizes the notion of the \textbf{direct sum} $M\oplus N$ which is defined for all non empty modules. 
+\item For any module homomorphism $f:M\to N$, the kernel of $f$ is the set of all elements of $M$ which get mapped to zero. It is a submodule of $M$ and thus an object of $\Mod_\textbf{k}$. The cokernel of $f$ is defined by the module $N/\Img(f)$.
+\item In $\Mod_\textbf{k}$, monomorphisms are precisely injective module homomorphisms and epimorphisms are precisely surjective module homomorphisms. In addition, every monomorphism is the kernel of its cokernel, and every epimorphism is the cokernel of its kernel. From this, binomalcy of $\Mod_\textbf{k}$ follows. 
+\end{compactitem}
+\end{exmp}
+
+
+
+
+\begin{exmp}For a left-noetherian ring \textbf{k}, the category of finitely generated left modules over \textbf{k} is an abelian category.
+\end{exmp}
+
+
+\begin{lemma} If $\C$ is a small category and $\mathcal{A}$ is an abelian category, then the category of all functors from $\C$ to $\mathcal{A}$ is an abelian category.
+\end{lemma}
+
+In particular, the category of representations from a small category $\C$ to $\Mod_k$ is abelian. These categories will become our focus for the remainder of the paper.
+
+
+
+
+%%%insert diagram%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Representations of Categories }
+
+
+
+Just as groups are seen as an abstract study of symmetries and permutations, categories are thought of as the study of functions, or transformations. A representation of a group is a way of thinking of permutations as linear transformations, and thus a representation of a category allows us to view abstract transformations as concrete linear transformations.  
+
+
+
+\section{Module Theory}
+\subsection{Basic Definitions and Theory}
+
+The focus of this thesis is the study of representations of a category, which, as we will see in the next section, are modules. Thus, it will behove us to examine some important properties of modules before proceeding. For a module $M$ over a ring $R$, we will refer to $M$ as an $R$-module.
+
+\begin{definition}
+Let $M$ be an $R$-module. We say that $M$ is a \textbf{free module} if it has a basis, i.e. a generating set of linearly independent elements of $M$.
+\end{definition}
+
+Given a free module, the cardinality of its basis is called the \textbf{rank} of the module.
+
+\begin{exmp} For a ring $R$, $R$ is a free module of rank 1 over itself, with any unit element of $R$ as the basis.
+\end{exmp}
+
+
+\begin{definition}
+An $R$-module, $M$, is \textbf{finitely generated} if it has a finite generating set. That is, $M$ is finitely generated if there exists a finite set of elements $A=\{a_1,...,a_n\}$ in $M$ such that for any $x$ in $M$, there exist $r_1,...,r_n$ in $R$ with $x=r_1a_1+...+r_na_n$. The set $A$ is called the \textbf{generating set} of $M$. 
+\end{definition}
+
+If a module is generated by 1 element, it is called a \textbf{cyclic module}. 
+
+\begin{lemma}[Structure Theorem for Finitely Generated Modules over a PID] Every finitely generated module over a principal ideal domain is the direct sum of cyclic submodules.
+\end{lemma}
+
+
+It is important to note that the generating set $A$ of a finitely generated $R$-module $M$ is not necessarily a basis for $M$, as its elements are not necessarily linearly independent over $R$. To see an example of this, consider $\Z_n$ as a module over $Z$ for any $n\geq 1$. $\Z_n$ is finitely generated; in fact, it is generated by a single element, $\{1\}$. However $M$ is not free, since for any $g\in \Z_n$, $ng=0$. 
+
+This observation motivates the following proposition.
+
+\begin{proposition}
+An $R-$module $M$ is finitely generated if and only if it is a quotient of a finitely generated free module. 
+\end{proposition}
+
+\begin{proof}  Assume that $M$ is a quotient of the finitely generated free module $F$. Let $q:F\twoheadrightarrow M$ be the quotient homomorphism, and let $\{x_1,...,x_n\}$ be a basis of $F$. Then $\{q(x_1),q(x_2),...,q(x_n)\}$ generates $M$, making $M$ finitely generated. Conversely, suppose $M$ is generated by $\{a_1,...,a_n\}$. Then $M$ is the quotient of the free module $\oplus_{i=1}^n R$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Properties of Noetherian Modules}
+
+In this section, we will address some useful properties of noetherian modules that will carry over to noetherian representations in future sections. 
+
+\begin{definition}\label{noethmod} A module $M$ is a \textbf{Noetherian module} if it satisfies the ascending chain condonition on its submodules, where the submodules are partially ordered by inclusion.
+\end{definition}
+
+\begin{proposition} Let $M$ be an $R$-module. The following are equivalent:
+\begin{compactenum}
+\item $M$ satisfied the ascending chain condition on its submodules
+\item Every submodule of $M$ is finitely generated.
+\end{compactenum}
+\end{proposition}
+\begin{proof}
+First, assume $M$ satisfied ACC on its submodules, and assume that $N$ is a submodule of $M$ which is not finitely generated. Thus by our assumption $N\neq 0$, and for $n_1\in N$, $\langle n_1\rangle \subsetneq N$. So there exsits an element $n_2\in N-\langle n_1\rangle$, and we may thus construct inductively a sequence of element $n_1,\hdots , n_k\in N$ such that 
+\[\langle n_1\rangle \subsetneq \langle n_1,n_2 \rangle \subsetneq \hdots \subsetneq \langle n_1,\hdots, n_k \rangle.\]
+Since $N$ is not finitely generated, $\langle n_1,\hdots, n_k \rangle \subsetneq N$, so there exists $n_{k+1}\in N-\langle n_1,\hdots, n_k \rangle$. Thus there exists an infinite ascending chain of submodules in $M$ which never stabilizes, which contradicts our assumption.
+
+Conversely, assume that every submodule of $M$ is finitely generated and let $N_1\subseteq N_2\subseteq \hdots$ be an ascending chain of submodules. Let $N=\cup N_i$, which, as a submodule of $M$, is finitely generated. Thus $N=\langle n_1,n_2,\hdots,n_k\rangle$. For each $i$, let $m_i$ be such that $n_i\in N_{m_i}$, and let $m=$max$\{m_1,\hdots,m_k\}$. Thus, we have that $N\subseteq N_{m}\subseteq N_{m+k}\subseteq \cup N_i\subseteq N$, so $N=N_m=N_{m+k}$ for all $k$. Thus, the chain $N_1\subseteq N_2\subseteq\hdots$ stabilizes after finitely many steps.
+\end{proof}
+
+
+
+
+
+%% all results from paper noetherian modules by Keith Conrad
+
+
+
+
+The following theorems are common results of noetherian modules that we will want to keep in mind as we further explore noetherianity in further sections. Since the results are standard, some proofs are left to the reader. 
+
+
+\begin{theorem} If $M$ is a noetherian $R$-module, then every submodule $S$ of $M$ is noetherian.\end{theorem}
+\begin{proof} By definition \ref{noethmod}, since every submodule of $S$ is also a submodule of $M$, all submodules of $S$ are finitely generated.
+\end{proof}
+
+
+\begin{theorem}\label{noethquot} If $M$ is a noetherian $R-module$ then every quotient module $M/N$ is Noetherian.
+\end{theorem}
+\begin{proof}
+Every submodule of $M/N$ will be of the form $L/N$ where $N\subset L\subset M$. Then since $M$ is noetherian, $L$ is finitely generated and the quotient homomorphism will map its generators to generators of $L/N$.
+\end{proof}
+
+
+
+\begin{theorem}\label{2} Let $M$ be an $R$-module and $N$ be a submodule. Then $M$ is noetherian if and only if $N$ and $M/N$ are Noetherian.
+\end{theorem}
+\begin{proof}
+If $M$ is noetherian then $N$ is noetherian and  by Theorem \ref{noethquot} $M/N$ is noetherian. Conversely, suppose $N$ and $M/N$ are noetherian and let $L$ be a submodule of $M$. The image of $L$ in $M/N$, denoted $I$, and $L\cap N$ are both finitely generated. Let $x_1,...,x_m\in L$ generate $I$ and $y_1,\hdots,y_n$ generate $L\cap N$. Then for any $x\in L$ we have $x\equiv r_1x_1+\hdots +r_kx_k$mod$N$ for some $r_i\in R$, and thus $x-\sum r_ix_i\in L\cap N$. So $x-\sum r_ix_i=\sum s_jy_j$ for $s_j\in R$, and $x=\sum r_ix_i+\sum s_jy_j$. Therefore $L$ is spanned by $x_1,\hdots , x_m,y_1,\hdots,y_n.$
+\end{proof}
+
+
+\begin{theorem}\label{directsum} If $M$ and $N$ are Neotherian $R$-modules then their direct sum $M\oplus N$ is a Noetherian $R$-module.
+\end{theorem}
+\begin{proof} Apply Theorem \ref{2} to the module $M\oplus N$ and the submodule $M\oplus 0\cong M$, where $(M\oplus N)/(M\oplus 0)\cong N$.
+\end{proof}
+
+
+
+\begin{theorem} If $M_1,...,M_k$ are Noetherian $R$-modules, then $M_1\oplus...\oplus M_k$ is a Noetherian $R$-module.
+\end{theorem}
+\begin{proof} This theorem is a direct result of applying induction on $k$ and applying the results from Theorem \ref{directsum}
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+\section{Noetherian Categories}
+\begin{definition} An object $X$ in category $\C$ is \textbf{noetherian} if every subobject of $X$ is finitely generated. 
+\end{definition}
+
+\begin{remark} Recall the equivalent propererties for noetherianity given in section 2. When applicable, the same equivalent conditions may be applied. In particular for a poset category $\C$, an object $X$ of $\C$ is noetherian if every ascending sequence of subobjects of $X$ stabilizes. 
+\end{remark}
+
+We classify a category $\C$ as noetherian if every object of $\C$ is noetherian. The main focus of this paper is in classifying for which categories $\C$ is the category of representations of $\C$ noetherian. In this section, we will give some examples and intuition of noetherian categories.
+
+
+
+\begin{exmp}\label{noetherian vs}\textbf{(Vect$_{fin}$ is noetherian)} \textit{The category of finite dimensional vector spaces is noetherian.}
+
+In other words, we need to show that every subspace of a finitely generated vector space is itself finitely generated. This is a result of basic linear algebra.
+
+\end{exmp}
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Finitely Generated Representation}
+
+
+We now have the tools needed to define a representation of a category as follows.
+
+ \theoremstyle{definition}
+\begin{definition}  A \textbf{representation} of $\C$, also known as a $\C$-\textbf{module} over a ring $k$, is a functor $\C\to \Mod_k$. A functor $H:\C\to\Mod_k$ is a \textbf{subrepresentation} of a representation $F:\C\to\Mod_k$ if $H$ is a subfunctor of $F$. That is, it must satisfy the following conditions:
+\begin{compactenum}[i.]
+\item For all objects $x\in\C$, $H(x)\subseteq F(x)$, and
+\item For all arrows $f:x\to y\in \C$, $H(f)$ is the restriction of $F(f)$ to $H(y)$.                                                                                  
+\end{compactenum}
+\end{definition}
+
+A map between representations is a natural transformation. When we say an \textbf{element} of a representation $M$, we mean an element of $M(x)$ for some object $x\in \Ob(\C)$.
+
+Consider a representation $M:\C\to \Mod_\textbf{k}(\C)$, and a set $S=\{s_1,...,s_k\}$ of elements of $M$. The subrepresentation of $M$ \textbf{generated by the set $S$}, denoted $\langle S\rangle$, is the smallest representation of $M$ that contains $S$. The elements of $\langle S\rangle$ are all the elements of $M$ that can be obtained from elements of $S$ by applying morphisms of $\C$ and taking \textbf{k}-linear combinations. If there exists some finite set $S^\prime$ for which $\langle S^\prime \rangle= M$, then we say that $M$ is \textbf{finitely generated}. In other words, $M$ is finitely generated if there exists a set $B=\{b_1,b_2,\hdots, b_k\}$ of elements of $M$, where $b_i\in M(x_i)$ with $x_i$ objects of $\C$, such that  for every object $y$ in $\C$ and every element $m$ in $M(y)$, there exist scalars $\alpha_1,\hdots,\alpha_k$ in \textbf{k} and morphisms $f_1,\hdots,f_k:x_i\to y$ such that 
+\[m=\sum_{i=1}^k \alpha_i M(f_i)(b_i),\]
+where $f_i:x_i\to y$ are morphisms in $\C$.
+
+To understand this concept more clearly, let us examine the following example.
+
+\begin{exmp} Consider the category $\C$ with one object $x$ and whose endomorphisms form a monoid $A$, i.e.
+\[\text{End}(x)=A,\]
+where $A$ is a set with an identity elements and is closed under an associative binary operation (in this case, composition of endomorphisms). A representation of $\C$ is a \textbf{k}-module $M=M(x)$ where $A$ acts on $M(x)$ such that for each $a\in A$, $M(a):M\to M$ is a homomorphism. If $S\subseteq M$ is a subset of the representation, then we can consider the \textbf{subrepresentation generated by $S$}, denoted $\langle S\rangle$. This is the set of all elements of $M$ which can be obtained by applying the module operations and the $A$-action for each element $a\in A$, and is equivalent to the definition given in the previous paragraph of a subrepresentation generated by a set. 
+
+\end{exmp}
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{$\Rep_k(\C)$}
+
+
+The \textit{category of representations} of $\C$, denoted $\Rep_k(\C)$, is the category whose objects are representations, i.e. functors $\C\to \Mod_k$, and morphisms are natural transformations between such functors.
+
+
+Functors can be classified as noetherian in an analagous way to how we classified modules as noetherian. That is, a functor $F$ in $\Rep_k(\C)$ is \textbf{noetherian} if every subrepresentation is finitely generated. Equivalently, we can say that a representation is noetherian if every ascending chain of subrepresentations of $F$ stabilizies. 
+
+
+\begin{definition} We say that $\Rep_k(\C)$ is noetherian if every finitely generated object (representation) in it is noetherian. \end{definition}
+
+
+\begin{exmp} \textbf{(Noetherian Representation)} Let $\C$ be the category which has as elements the elements of $\mathbb{N}=\{\bar{1},\bar{2},\bar{3},..\}$ and the single arrow between two elements $n$ and $m$ if and only if $n\leq m$:
+\[\bar{1}\to\bar{2}\to\bar{3}\to\cdots .\]
+Consider the representation $F$, given by the diagram
+\[\textbf{k}\to\textbf{k}\to\textbf{k}\to\cdots,\]
+where all morphisms in the diagram are the identity on the ring, $\textbf{k}$. The only possible subrepresentations of $F$ will be of the form
+\[0\to0\to\cdots\to0\to\textbf{k}\to\textbf{k}\to\cdots,\]
+where there are zeros in the first $i$ positions, and then \textbf{k} in every subsequent position. To convince ourselves of this, we must show that for an arbitrary sub functor $M$ of $F$,
+\begin{compactenum}[i.]
+\item The only possible elements of $M$ are 0 and \textbf{k}, and
+\item \textbf{k} will always be followed by \textbf{k}.
+\end{compactenum}
+
+Recall that $M$ is a subfunctor of $F$ if $M$ is a functor, and there is a natural transformation $i:M\to F$ where each component of $i$ is monic. To see why (1) is true, just notice that there are no nontrivial subobjects of \textbf{k} in $\Mod_k(\C)$, and if $M$ contained a module $M(x)$ over \textbf{k} not equal to \textbf{k}, then the compoent $i_x:M(x)\to F(x)$ would not be monic. Thus the only possible elements of $M$ are 0 and \textbf{k}. To prove (2), consider the following diagram
+
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}
+k\arrow{r}\arrow{d}{i} &0\arrow{d}{i}\\
+k\arrow{r}&k
+\end{tikzcd}
+\end{figure}
+
+
+This diagram does not commute, since any non trivial element of \textbf{k} will be mapped to zero in one direction and to itself in the other direction.
+
+Now, since every subrepresentation is of this form, we may conclude that $F$ is a noetherian representation since every ascending chain of subrepresentations stabilizes.
+\end{exmp}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Principal Projectives}
+
+ For a representation $F$ in $\Rep_k(\C)$, an element of $F$ is the element $F(x)$ in $\Mod_k$ for some $x\in \C$. Given a morphism $f:x\to y$ in $\C$, we will denote $f_*$ as the map of $k$-modules $F(x)\to F(y)$. 
+
+
+
+
+\begin{remark} One might wonder if a representation $R\in\Rep_k(\C)$ is finitely generated, does that imply that it is noetherian? This is not necessarily the case. Here is an example of a category whose category of representations is not Noetherian (even when \textbf{k} is a field):
+\end{remark}
+
+
+
+\begin{exmp}\textbf{(Finitely generated Non-Noetherian Representation)}
+Let $\C$ be the "star shaped" category, with objects $x_0,x_1,x_2,...$ and morphisms: for all $n>0$ there exists a unique morphism $x_0\to x_n$, and all other morphisms are the identity.
+
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}[row sep=tiny]
+& x_1  \\
+& x_2  \\
+x_0 \arrow[uur]\arrow[ur] \arrow[dr] & \vdots\\ &x_n\\
+&\vdots
+\end{tikzcd}
+\caption{Star Shaped Category}
+\end{figure}
+
+
+Let $M$ be the representation which maps every object to \textbf{k} and every morphism to the identity (note the subtle difference between this representation and the one in the previous example). $M$ is finitely generated, in fact it is generated by the identity element of $M(x_0)=$\textbf{k}. Consider the subrepresentation $M_i$ of $M$ which maps $x_1$ through $x_i$ to \textbf{k} and all other elements to 0 (this is a subrepresentation since the only morphisms are the identity arrows). Then $M_1,M_2,M_3,...$ is an increasing chain of subrepresentations which never stabilizes, so $M$ is not noetherian. We can also see non-noetherianity of $M$ by noting the following subrepresentation of $M$ is not finitely generated: Let $N$ be the representation which maps $x_0$ to 0 and every other object to $k$. 
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}[row sep=tiny]
+& \textbf{k}  \\
+& \textbf{k}  \\
+0 \arrow[uur]\arrow[ur] \arrow[dr] & \vdots\\ &\textbf{k}\\
+&\vdots
+\end{tikzcd}
+\caption{Non-finitely generated subrepresentation, N}
+\end{figure}
+
+
+In order to be finitely generated, there must exist a finite set $S$ of elements of $N$ such that for any object $x_i\in \C$ we must be able to arrive at any object $N(x_i)$ by a series of available operations in $\Mod_\textbf{k}$. Consider the element $1\in \textbf{k}$ and let $N(x_i)$ be an arbitrary element of $N$. $1$ gets mapped to 0 in $N(x_0)$, and then again to 0 in $N(x_i)$, but 0 does not generate \textbf{k}, so $N$ cannot be finitely generated.  
+
+\end{exmp}
+
+
+
+For an object $x$ of $\C$, we define the \textbf{principal projective} representation $P_x$ of $\C$ by defining
+\[P_x(y)=k[\Hom(x,y)],\]
+
+where $\Hom(x,y)=\{f:x\to y\mid f$ is a $\C$ homomorphism.$\}$ $P_x(y)$ is the free left $k$-module generated by $\Hom(x,y)$, where we write $e_f$ as the corresponding element in $P_x(y)$ to the morphism $f:x\to y$ in $\C$. Thus, an element of $P_x(y)$ will be of the form
+\[\sum_{f\in\Hom(x,y)} \lambda_f e_f.\]
+
+
+Let $M$ be another representation. By the Yoneda Lemma, we see that
+\[\Hom(P_x,M)=M(x).\]
+
+This means that $\Hom(P_x,-)$ is an exact functor, and thus $P_x$ is a projective object of $\Rep_k(\C)$ (thus, the name principal projective). 
+
+
+Every representation $M$ in $\Rep_k(\C)$ can be written as the quotient
+\[M=\oplus_{i\in I} P_{x_i}/\oplus_{j\in J} P_{x^\prime_j},\]
+for indexing sets $I,J$ and objects $x_i,x^\prime_j\in \C$. A representation is \textbf{finitely generated} if the set $I$ is finite. The following proposition states this more clearly. 
+
+\begin{proposition}\label{fingen} A representation is finitely generated if and only if it is a quotient of a finite direct sum of principal projective objects.
+\end{proposition}
+
+Proposition \ref{fingen} is proved in essentially the same way as the analogous statement about modules over a ring (Proposition 4.1.1).
+
+Equivalently, we can say that $M$ is finitely generated if there is a surjection
+\[\oplus_{i=1}^n P_{x_i} \to M \]
+for a finite set of elements $\{x_i\}$ in $\C$. We say a map of representations is a surjection if it evaluates to a surjection in $\Mod_k(\C)$ when evaluated at each object in $\C$. 
+
+\begin{proposition} The category $\Rep_k(\C)$ is noetherian if and only if every principal projective is noetherian.
+\end{proposition}
+\begin{proof}
+If $\Rep_\textbf{k}(\C)$ is noetherian then every representation of $\C$ is noetherian, in particular every principal projective is noetherian. Conversely, assume that every principal projective is noetherian and let $M$ be a finitely generated object. By Proposition 4.3.1, $M$ is a quotient of a finite direct sum of principal projectives. Since noetherianity descends through quotients and across direct sums, $M$ is noetherian, which completes the proof.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Finiteness Property of a Functor}
+
+The main results in this paper revolve around showing certain categories have noetherian representation categories. However, if we know that a category $\C$ has noetherian $\Rep_k(\C)$, and we can construct a certain functor from $\C$ to another category $\C^\prime$, then it is also possible to tell whether $\C^\prime$ has a noetherian representation category. The goal of this section is to explore such functors more thoroughly.
+
+
+
+Let $\phi:\C\to\C^\prime$ be a functor.
+
+
+ \theoremstyle{definition}
+\begin{definition}\label{F} A functor $\phi$ is an \textbf{$\mathcal{F}$- functor} if the following condition holds: given any object $x$ of $\C^\prime$ there exist finitely many objects $y_1,...,y_n$ of $\C$ and morphisms $f_i:x\to \phi(y_i)$ in $\C^\prime$ such that for any object $y$ of $\C$ and any morphism $f:x\to \phi(y)$ in $\C^\prime$, there exists a morphism $g:y_i\to y$ such that $f=\phi(g)\circ f_i$.
+\end{definition}
+
+
+For a functor $\phi:\C\to\C^\prime$, we can define a pullback functor on representations
+\[\phi^*:\Rep_k(\C)\to\Rep_k(\C^\prime)\]
+such that, for $y$ an object of $\C$ and $P_x$ a principal projective of $\Rep_k(\C^\prime)$, we have that 
+\begin{equation}\label{phi*}\phi^*(P_x)(y)=k[\Hom_{\C^\prime}(x,\phi(y)].\end{equation}
+ While this looks like a principal projective functor, it is not necessarily. In general, when we have a functor from $\phi:\C\to \C^\prime$, the pullback functor $\phi^*$ will induce a representation from $\C\to \Rep_k(\C)$, but it will not be a principal projective. 
+
+
+
+
+\begin{figure}[hbt]
+\centering
+\begin{tikzcd}
+\C \arrow{r}{\phi} \arrow[swap]{d}{} & \C^\prime \arrow{d}{} \\
+\Rep_k(\C)  & \Rep_k(\C^\prime)\arrow{l}{\phi^*} 
+\end{tikzcd}
+\caption{Contravariant Functor $\phi^*$}
+\label{Contravariant Functor}
+\end{figure}
+
+
+We can categorize whether or not a functor $\phi$ is an $\mathcal{F}$-functor using $\phi^*$ with the following proposition:
+
+\begin{proposition}\label{fintofin} A functor $\phi:\C\to\C^\prime$ is an $\mathcal{F}$-functor if and only if $\phi^*$ takes finitely generated objects of $\Rep_k(\C^\prime)$ to finitely generated objects of $\Rep_k(\C)$.
+\end{proposition}
+\begin{proof}  Assume that $\phi$ is an $\mathcal{F}$ functor. By Proposition \ref{fingen}, it is enough to show that $\phi^*$ takes principal projectives to finitely generated representations. Let $P_x$ be the principal projective of $\C^\prime$ at object $x\in\C^\prime$. From equation \ref{phi*}, we see that $\phi^*(P_x)(y)$ has basis elements $e_f$ for $f\in \Hom_{C^\prime}(x,\phi(y))$. Let $f_i:x\to \phi(y_i)$ be as in the Definition \ref{F}, in particular that there are finitely many such $f_i$. For each $f$ in $\C^\prime$ there exists a morphism $g:y_i\to y$ in $\C$ such that $f=\phi(g)\circ  f_i$. Thus, $e_{f_i}$ generated $\phi^*(P_x)$, and thus it is finitely generated. The converse is left to the reader, as it is not used in this paper.\end{proof}
+
+
+
+\begin{proposition}\label{noeth}Suppose that $\phi:\C\to\C^\prime$ is an essentially surjective functor. Let $M$ be an object of $\Rep_k(\C^\prime)$ such that $\phi^*(M)$ is finitely generated (resp. noetherian). Then $M$ is finitely generated (resp. noetherian).
+\end{proposition}
+\begin{proof} Let $S$ be an element of $\phi^*(M)$ and $S^\prime$ the corresponding set of elements of $M$. If $N$ is a subrepresentation of $M$ containing $S^\prime$, then $\phi^*(N)$ is a subrepresentation of $\phi^*(M)$ containing $S$ (since if $S$ contains $m\in \phi^*(M)(y)$ then $S^\prime$ contains $m\in M(\phi(y))$).Thus, if $N$ (resp. $N^\prime$) is the subrepresentation of $M$ (resp. $\phi^*(M)$) generated by $S^\prime$ (resp. $S$), then $N^\prime\subset \phi^*(N)$. Therefore we see that if $S$ generated $\phi^*(M)$ then $\phi^*(N)=\phi^*(M)$, and hence $N=M$ since $\phi$ is essenitally surjective. Thus $S$ generated $M$, and in particular if $\phi^*(M)$ is finitely generated then so is $M$.
+
+Now from the preceding paragraph, if we assume that $\phi^*(M)$ is noetherian, then given a subrepresentation $N$ of $M$, we obtain a subrepresentation $\phi^*(N)$ of $\phi^*(M)$. Since every subrepresentation of a noetherian representation is finitely generated, it follows that $\phi^*(N)$ is finitely generated. Thus by the first part of the proof, $N$ is finitely generated, and so $M$ is noetherian since $N$ was an arbitrary subrepresentation.\end{proof}
+
+
+
+Now we can prove the main result of this section
+
+\begin{corollary} Let $\phi: \C\to \C^\prime$ be an essentially surjective $\mathcal{F}$-functor, and suppose $\Rep_k(\C)$ is noetherian. Then $\Rep_k(\C^\prime)$ is noetherian.\end{corollary}
+\begin{proof} Let $M$ be a finitely generated representation of $\C^\prime$. To show $\Rep_k(\C^\prime)$ is noetherian, it is enough to show that $M$ is noetherian. Since $M$ is finitely generated, $\phi^*(M)$ is finitely generated by \ref{fintofin}. Thus $\phi^*(M)$ is noetherian since $\Rep_k(\C)$ is noetherian, and so  $M$ is noetherian by Proposition \ref{noeth}.
+\end{proof}
+
+
+
+
+
+
+
+\chapter{Gr\"{o}bner Approach to the Noetherian Property}
+
+In this chapter, we address Sam and Snowden's approach to proving the noetherian property of categories using Gr\"{o}bner theory. In \ref{monomial}, we will see how the authors make a connection between monomial and principal sub representations. In Section \ref{initM}, we will demonstrate how they define an ordering on the set of monomial subrepresentations, and in Section 5.3, we will use these ideas to define a Gr\"{o}bner basis for a represenation.
+
+\section{Monomial Representations}\label{monomial}
+
+Let $\C$ be an essentially small category. Define $S:\C\to$\textbf{Set} to be a functor taking an element $x\in \C$ to the set $S(x)$ and an arrow $f:x\to y\in \C$ to the arrow $f_*:S(x)\to S(y)$. From $S$, we can define a representation $P:\C\to\Mod_k$ by 
+\[P(x)=k[S(x)],\]
+ that is, the free $k$-module generated by the set $S(x)$. For $f\in S(x)$, we write $e_f$ to denote the corresponding element in $P(x)$.
+
+\begin{definition} A subfunctor is \textbf{principal} if it is generated by a single element.\end{definition}
+
+ To see a concrete idea of what this means, consider in $\C$ objects $x,y$ with morphisms $\alpha_1,\alpha_2,...,\alpha_n:x\to y$. The functor $S$ maps these morphisms to $S(\alpha_1),S(\alpha_2),...,S(\alpha_n):S(x)\to S(y)$. Now consider an element $f\in S(x)$. The principal subrepresentation of $S$ generated by $f$ is
+
+ \[\{S(\alpha_1)(f),S(\alpha_2(f),...,S(\alpha_n)(f)\}.\]
+
+
+
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}[row sep=huge, column sep=huge, text height=1.5ex, text depth=0.25ex]
+  x \ar[r,"\alpha_2"]\ar[r,swap,"\vdots"]\ar[bend right=40,shift right,r,"\alpha_n"]\ar[bend left=30,shift left,r,"\alpha_1"] & y
+\end{tikzcd}
+\begin{tikzcd}[row sep=huge, column sep=huge, text height=1.5ex, text depth=0.25ex]\mapsto
+  S(x) \ar[r,"S\alpha_2"]\ar[r,swap,"\vdots"]\ar[bend right=30,r,"S\alpha_n",shift right]\ar[bend left=30,shift left,r,"S\alpha_1"] & S(y)
+\end{tikzcd}
+\end{figure}
+
+
+
+
+ \theoremstyle{definition}
+\begin{definition} A \textbf{monomial} element of $P$ is of the form $\lambda e_f$ for some $\lambda \in k$ and $f\in S(x)$. A subrepresentation $M$ of $P$ is \textbf{monomial} if $M(x)$ is spanned by all of the monomials it contains for each $x\in \C$. \end{definition}
+
+
+
+
+The aim of this section is to give a sufficient condition for the representation $P$ to be noetherian by examining its monomial subrepresentations. First we give an ordering to the set of principal subrepresentations, $|S|$, ordered by reverse inclusion, for a small category $\C$ as follows. 
+
+ Let $\tilde{S}=\cup_{x\in\C}S(x)$. Define a partial order on $\tilde{S}$ by saying that for $f\in S(x)$ and $g\in S(y)$, $f\leq g$ if there exists $h:x\to y$ such that $h_{*}(f)=g$. Then we have the equivalence relation $f\sim g$ if $f\leq g$ and $g\leq f$. $|S|$ can then be defined by the quotient $\tilde{S}/ \sim$ with the induced partial order on representatives.
+
+
+Given a subrepresentation $M$ of $P$, and given $f\in \tilde{S}$, consider the set
+\[I_M(f)=\{\lambda \in k\mid \lambda e_f\in M\}.\]
+
+\begin{remark}$I_M(f)$ is an ideal of $k$.\end{remark}
+Since $M$ is a subrepresentation, $I_M(f)$ is closed under addition and scalar multiplication. That is for any $a\in k$, if $\lambda_1$ and $\lambda_2\in I_M(f)$, then $a(\lambda_1+\lambda_2)\in I_M(f)$. 
+
+
+ Further, if $f\leq g$, then $I_M(f)\subseteq I_M(g)$. Indeed, consider $\lambda\in I_M(f)$, and morphism $h:x\to y$ such that $h_*(f)=g$. Then the induced morphism $k[h_*]:M(x)\to M(y)$ sends $\lambda e_f$ to $\lambda e_g$, and thus $\lambda \in I_M(g)$. This gives us that if $f\sim g$, then $I_M(f)=I_M(g)$. 
+
+Define $\mathcal{J}(k)$ to be the \textbf{poset of left ideals} in $k$ and $\mathcal{M}(P)$ to be the \textbf{poset of monomial subrepresentations}, both ordered by inclusion, and let $\mathcal{F}=\mathcal{F}(|S|,\mathcal{J}(k))$ be the set of all order preserving functions $I:|S|\to \mathcal{J}(k)$, partially ordered by $I\leq I^\prime$ if $I(f)\leq I^\prime(f)$ for all $f\in |S|$. Given $M\in \mathcal{M}(P)$, we have an order preserving function
+\[I_M:|S|\to \mathcal{J}(k),\]
+where $I_M\in \mathcal{F}(|S|,\mathcal{J}(k))$. From this construction, the obtain the following proposition.
+
+
+\begin{proposition}
+The map $I:\mathcal{M}(P)\to \mathcal{F}(|S|,\mathcal{J}(k))$ is an isomorphism of posets.
+\end{proposition}
+$Proof:$ We must show that $I$ is an order preserving bijection. To see that $I$ is order preserving, take $M\subseteq M^\prime\in \mathcal{M}(P)$. $I$ maps these monomial representations to $I_M$ and $I_{M^\prime}$, respectively. Then for each $f\in |S|$, it is clear that $I_M(f)\subseteq I_{M^\prime}(f)$. 
+
+Now to construct the inverse of $I$, Let $L:|S|\to \mathcal{J}(k)$ be an order preserving function. Take $f\in |S|$ and consider the left ideal $L(f)$ of $k$ such that for $f\leq g$, $L(f)\subseteq L(g)$. By the construction of the map $I_M$, we know such an ideal exists. Now we can say the map $I^\prime$ maps $L:|S|\to \mathcal{J}(k)$ to the monomial subrepresentation $M\subseteq P$ defined by
+\[ M(x)=\sum_{f\in S(x)} L(f)e_f.\]
+To check that $I^\prime$ is order preserving, take two maps $L, L^\prime:|S|\to \mathcal{J}(k)$ such that $L\leq L^\prime$, i.e. $L(f)\subseteq L^\prime(f)$ for all $f\in |S|$. Then,
+\begin{align*}
+L\mapsto M&: M(x)=\sum_{f\in S(x)} L(f)e_f,\\
+L^\prime\mapsto M^\prime&: M^\prime(x)=\sum_{f\in S(x)} L^\prime(f)e_f.
+\end{align*}
+Thus $M(x)\subseteq M^\prime(x)$ and $I^\prime$ is thus the order preserving inverse of $I$. Hence, $I$ is an isomorphism.$_\square$
+
+
+
+
+We now can state the following equivalence statement.
+
+\begin{theorem}\label{monomialsubrep}
+Let $P:\C\to\Mod_\textbf{k}(\C)$ be a representation. The following are equivalent, assuming $P$ is non-zero.
+\begin{compactenum}
+\item Every monomial subrepresentation of $P$ is finitely generated.
+\item The poset $\mathcal{M}(P)$ satisfies ACC.
+\item The poset $|S|$ is noetherian and \textbf{k} is left-noetherian.
+\end{compactenum}
+\end{theorem}
+\begin{proof}
+That (a) and (b) are equivalent is standard and has already been addressed in analogous cases in this paper. (b) being equivalent to (c) follows using the map from the previous proposition and Proposition 2.0.2 (c), where $|S|$ is nonempty if $P\neq 0$ and $\mathcal{J}(\textbf{k})$ contains two distinct comparable elements: zero and unit ideals. 
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{init($M$)}\label{initM}
+
+
+Now that we have connected principal subrepresentations with monomial subrepresentations of $P$, we will do the same for arbitrary subrepresentations of $P$. First, though, we must build a theory of \textit{monomial orders}. Let \textbf{WO} be the category of well ordered sets and strict order preserving functions, and let $S$ be a functor from $\C$ to \textbf{set}. There is a forgetful functor $F:$\textbf{WO}$\to$\textbf{Set} sending a well ordered set $(R,\preceq)$ to its underlying set and "forgetting" the ordering on it. We can define an \textbf{ordering} on $S$ as a lifting of $S$ to \textbf{WO}, sending $S$ to a well ordered set $(S,\preceq)$  such that for every morphism $x\to y\in \C$, the induced map $S(x)\to S(y)$ is strictly order preserving. We say $S$ is \textbf{orderable} if it admits an ordering. 
+
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+  & \textbf{WO}\ar[d,"F"] & (S,\preceq)  \\
+\C \ar[r,"S"] & \textbf{Set} &  S \ar[u,dashed,"\text{ordering}",swap]
+\end{tikzcd}
+\end{figure}
+Recall the representation $P:\C\to\Mod_\textbf{k}(\C)$ defined by $P(x)=k[S(x)]$.
+\begin{definition} Given an ordering $\preceq$ on $S$ and a non-zero element 
+\[\alpha=\sum_{f\in S(x)}\lambda_f e_f \]
+in $P(x)$, an \textbf{initial term} of $\alpha$, denoted init$(\alpha)$, is $\lambda_g e_g$ where $g=\max_{\preceq}\{f\mid \lambda_f\neq 0\}$. The \textbf{initial variable} of $\alpha$, denoted init$_0(\alpha)$, is $g$. \end{definition}
+
+
+\begin{exmp} If $\alpha\in P(x)$ is equal to $\lambda_1e_1+\lambda_5e_5+\lambda_7e_7$, where $e_i < e_j$ for $i < j$, then init$_0(\alpha)=7$ and init$(\alpha)=\lambda_7e_7$, where $7\in S(x)$ and $e_7$ is the corresponding element of $P(x)$. \end{exmp}
+
+
+\begin{definition} For a subrepresentation $M$ of $P$, the \textbf{initial representation} of $M$, denoted init$(M)$, is defined by setting init$(M)(x)$ to be the \textbf{k}-span of the elements init$(\alpha)$ for non-zero $\alpha\in M(x)$.
+\end{definition}
+
+
+
+\begin{proposition}\label{initmonomial}
+init$(M)$ is a monomial subrepesentation of $P$.
+\end{proposition}
+\begin{proof}
+That init$(M)$ is monomial follows directly from its definition, since it is the span of the elements of init$(\alpha)$, all of which are monomials. Thus, we just need to prove that init$(M)$ is indeed a subrepresentation of $P$. This equates to showing that a morphism $g:x\to y$ in $\C$ induces a map $g_*:S(x)\to S(y)$ that maps init$(M)(x)$ into init$(M)(y)$. Define an element of $M(x)$, $\alpha=\sum_{i=1}^{n}\lambda_ie_{f_i}$, with each $\lambda_i$ non-zero and ordered so that $f_i\prec f_1$ for all $i>1$. Thus, $g_*(\alpha)=\sum_{i=1}^n\lambda_ie_{g_*(f_i)}$ and, since $g_*$ is order preserving, $g_*(f_i)\prec g_*(f_1)$. This gives us that init$(g_*(\alpha))=\lambda_1e_{g_*f_1}=g_*(\text{init}(\alpha))$, proving our claim.
+\end{proof}
+
+
+\begin{proposition}\label{initM=initN} If $N\subseteq M$ are subrepresentations of $P$ and init$(N)=$init$(M)$, then $M=N$. \end{proposition}
+\begin{proof}
+$M=N$ means that $M(x)=N(x)$ for all $x\in\C$. So assume that $M(x)\neq N(x)$ for some $x\in\C$, and let $K\subseteq S(x)$ be the set of all elements which are the initial variable of some element of $M(x)\setminus N(x)$. By our assumtion, $K\neq \varnothing$, and since $S(x)$ is well ordered, there is some minimal element $f$ with respect to $\preceq$.  Now, pick an element $\alpha\in M(x)\setminus N(x)$ such that init$(\alpha)=f$ (by the definition of $K$, we know $f$ is some initial variable). By assumption, there exists $\beta$ in $N(x)$ with init$(\alpha)=$init$(\beta)$. This means, by definition of $\alpha$, that $\alpha-\beta\in M(x)\setminus N(x)$, giving us that init$_0(\alpha-\beta)\prec $init$_0(\alpha)$, which contradicts $f$ being minimal. Thus, $M=N$. 
+\end{proof}
+
+
+
+
+\section{Gr\"{o}bner Basis}\label{grobner}
+
+
+ \theoremstyle{definition}
+\begin{definition}\label{grobner} Let $M$ be a subrepresentation of $P$. A set $\mathcal{G}$ of elements of $M$ is a \textbf{Gr\"{o}bner Basis} of $M$ if $\{\init(\alpha)\mid \alpha\in \mathcal{G}\}$ generates $\init(M)$. $M$ has a \textbf{finite Gr\"{o}bner basis} if and only if init$(M)$ is finitely generated.
+\end{definition}
+
+The following proposition follows directly from Definition \ref{grobner} and Proposition \ref{initM=initN}
+
+\begin{proposition}\label{G generates M} Let $\mathcal{G}$ be a Gr\"{o}bner basis of $M$. Then $\mathcal{G}$ generates $M$.\end{proposition}
+
+The following theorem is the first main result of our paper, as it allows us to classify when a principal projective is noetherian.
+
+\begin{theorem} Let \textbf{k} be left-noetherian, $S$ orderable and $|S|$ noetherian. Then every subrepresentation of $P$ has a finite Gr\"{o}bner basis. In particular, $P$ is noetherian in $\Rep_k(\C)$.
+\end{theorem}
+\begin{proof}
+Let $M$ be a subrepresentation of $P$. To show that $M$ has a finite Grobner basis $\mathcal{G}$ is equivalent to showing that init$(M)$ is finitely generated. The conditions that \textbf{k} be left noetherian, $S$ orderable and $|S|$ noetherian give us that every monomial subrepresentation of $P$ is finitely generated by Theorem \ref{monomialsubrep}. By Theorem \ref{initmonomial}, init$(M)$ is a monomial subrepresentation, and thus it is finitely generated. The theorem follows. By Proposition \ref{G generates M} since $\mathcal{G}$ is finite, $M$ is finitely generated. Thus $P$ is noetherian.
+\end{proof}
+
+
+
+ 
+
+\begin{definition}\label{grobnercat} A category $\C$ is \textbf{Gr\"{o}bner} if, for all objects $x$ in $\C$, the functor $S_x$ is orderable and the poset $|S_x|$ is noetherian. $\C$ is \textbf{quasi-Grobner} if there exsits a Gr\"{o}bner category $\C^\prime$ and an essentially surjective $\mathcal{F}$-functor $\C^\prime\to \C$ .\end{definition}
+
+
+
+
+\begin{theorem} Let $\C$ be a quasi-Gr\"{o}bner category. Then for any left-noetherian ring \textbf{k}, the category $\Rep_k{\C}$ is noetherian.\end{theorem}
+
+\begin{proof}
+If $\C$ is Gr\"{o}bner, then every principal projectice of $\Rep_\textbf{k}(\C)$ is noetherian by the previous theorem, so $\Rep_\textbf{k}(\C)$ is noetherian by Proposition 4.3.2. If $\C$ is quasi-Gr\"{o}bner, then $\phi:\C^\prime\to\C$ is an essentially surjective $\mathcal{F}$-functor with $\C^\prime$ a Gr\"{o}bner category. Thus, $\Rep_\textbf{k}(\C^\prime)$ is noetherian, 	and thus by Proposition 4.4.1 $\Rep_\textbf{k}(\C)$ is noetherian.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Categories of Injections}
+
+
+The goal of the final chapter is to give a concrete example of a noetherian representation category. 
+
+\section{Formal Languages and Lingual Categories}
+
+Before we can prove the main result of the chapter, we must set up the framework of languages. The theory of formal language is an interesting and complex topic which will only be touched on in this paper.
+
+
+
+Let $\Sigma$ be a fixed finite set, which we call an \textbf{alphabet}. We let $\Sigma^*$ denote the set of all finite words in $\Sigma$. A \textbf{language} $\mathcal{L}$ on $\Sigma$ is a subset of $\Sigma^*$	
+
+
+
+\begin{exmp}
+
+Consider the alphabet 
+\[\Sigma=\{1,2,3,4,5,6,7,8,9,0,+,=\}.\]
+ We can express the language $\mathcal{L}$, the natural numbers, with well formed additions and well-formed addition equalities by imposing the following rules:
+\begin{compactenum}[i.]
+\item Every nonempty word that does not contain "+" or "=" and does not start with "0" is in $\mathcal{L}$.
+\item The word "0" is in $\mathcal{L}$.
+\item A word containing "=" is in $\mathcal{L}$ if and only if there is exactly one "=" and it seperates two valid words of $\mathcal{L}$.
+\item A word containing "+" but not "=" is in $\mathcal{L}$ if and only if every "+" in the word seperates two valid words of $\mathcal{L}$.
+\item No word is in $\mathcal{L}$ other than those implied by the previous rules.
+\end{compactenum}
+
+From these rules, we see that the word "1+5=1000" is in $\mathcal{L}$ however the word "+=434" is not. In other words, the words formed by these rules are not necessarily true, but we understand how to interpret them. 
+
+
+
+\end{exmp}
+
+
+\begin{definition}
+Let $\Sigma$ be an alphabet. A \textbf{norm} on $\Sigma$ is a monoid homomorphism $\nu:\Sigma^*\to \mathbb{N}^I$, for some finite set $I$ which is induced by a function $\Sigma\to I$. A norm on a language $\mathcal{L}$ over $\Sigma$ is a function $\mathcal{L}\to \mathbb{N}^I$ which is the restriction of a norm on $\Sigma$. 
+\end{definition}
+
+
+\begin{definition} Let $\C$ be an essentially small category. A norm on $\C$ is a function $\nu:|\C|\to \mathbb{N}^I$. A \textbf{normed category} is a category equipped with a norm. \end{definition}
+
+
+
+\begin{exmp} Let.  $\Sigma=\{0,1,\hdots,9\}$, and define the norm $\nu:\Sigma^*\to\mathbb{N}^1$ to be the function which associates to each word $x$ in $\Sigma^*$ its length, $\ell(x)$. For example, $\nu(1705)=\ell(1705)=4$.\end{exmp}
+
+
+
+
+
+
+For the rest of the section, we will assume that $\C$ is a directed category, normed over $\mathbb{N}^I$. Define a norm on $\C$ in the following way: given $f\in |S|$, let $\tilde{f}\in S(x)$ be a lift, and set $\nu(f)=\nu(x)$. To see that this indeed is a well-defined norm, note that since $\C$ is ordered, if $\tilde{f}^\prime\in S(y)$ is a second lift, then $x$ and $y$ must be isomorphic.
+% {\color{red} explain why}.
+
+
+
+\section{ The categories OI$_d$ and FI$_d$}
+
+For a positive integer $d$, we define the category \textbf{FI}$_d$ to be the category whose objects are finite sets and whose morphisms are pairs $(f,g)$ where $f:S\to T$ is an injection and $g:T\setminus f(S)\to \{1,\hdots,d\}$ is a function. Composition of morphisms is defined as follows: for injections $f:S\to T, f^\prime:T\to U$ and functions $g:T\setminus f(S)\to \{1,\hdots,d\}, g^\prime:U\setminus f^\prime(T)\to \{1,\hdots,d\}$, the composition $f^\prime\circ f:S\to U$ is defined by composition of functions, and is injective since the composition of injections is injective. The composition $g^\prime\circ g: U\setminus f^\prime(f(S))\to \{1,\hdots,d\}$ is similarly defined by composition of functions.
+
+
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+S\arrow{r}{f} 	&T\arrow{rr}{f^\prime}									& 											& U\\
+						& T\setminus f(S)\arrow{dr}{g}& 											& U\setminus f^\prime(T)\arrow{dl}{g^\prime}\\
+						& 																				&\{1,\hdots,d\} 	&
+\end{tikzcd}
+\caption{composition of morphisms in \textbf{FI}$_d$}
+\end{figure}
+
+The category \textbf{OI}$_d$ is defined analogously with objects now being totally ordered finite sets and morphisms $(f,g)$ with $f$ an order preserving injection and no additional conditions placed on $g$.
+
+
+
+%The aim of this section is to prove that $\Rep_k(\textbf{FI}_d)$ is noetherian. First we will need the following two results:
+
+Let $\Sigma=\{0,\hdots,d\}$, which, as a finite subset of $\mathbb{N}$, is noetherian. Let $\mathcal{L}\subseteq \Sigma^*$ be the language on $\Sigma$ with words of the form $w_1\cdots w_r$ where exactly $n$ of the $w_i$ are equal to zero (e.g. in the case where $d=5, n=1$: $w=153032$ is a word in $\mathcal{L}$ but $w^\prime=10101$ is not.) We can equip $\mathcal{L}$ with the \textbf{subsequence order}: if $s:[i]\to\Sigma$ and $t:[j]\to \Sigma$ are words, then $s\leq t$  if there exists $I\subseteq [j]$ such that $s=t\mid_I$. If a languge $\mathcal{L}$ has an order on it, we call $\mathcal{L}$ an \textbf{ordered language}.
+
+\begin{exmp} Let $d=9$ and $n=1$. To see an example of how the subsequence order works, consider words $s=1304, t=5163074,t^\prime=1034$. Then $s\leq t$ since 1304 can be embedded into $t$, but $s\not\leq t$ since there is not subset of 1034 for which 1304 can be embedded into.
+\end{exmp} 
+
+Now, we can see that $\mathcal{L}$ is a noetherian poset by \textit{Higman's Lemma}: 
+\begin{equation}\label{higman}\text{If $\Sigma$ is a noetherian poset, so is $\Sigma^*$,}\end{equation}
+ and thus so is any subset $\mathcal{L}$ of $\Sigma^*$ (see Sam and Snowden Theorem 2.5 for a proof). Since $\mathcal{L}$ is noetherian, every ideal of $\mathcal{L}$ is an ordered language. To see this, let $w=w_1\cdots w_n$ be a word in $\mathcal{L}$ and consider the principal ideal $I_w$ generated by $w$:
+\[I_w=\Sigma^{\times*}w_1\Sigma^{\times*}w_2...\Sigma^{\times*}w_n\Sigma^{\times*},\]
+
+where $\Sigma^\times=\Sigma\setminus\{0\}$, since a word in $\mathcal{L}$ can only have $n$ zeros, and $w$ is a word with exactly $n$ zeros. $I_w$ is an ordered language, as it is a subset of $\Sigma^*$ and ordered by the order on $\mathcal{L}$. Now any ideal $I$ of $\mathcal{L}$ may be expressed as a finite union of principal ideals since $\mathcal{L}$ is noetherian. Since a finite union of ordered languages is again an ordered language, we obtain the desired result. 
+
+With this result in hand, we can now prove the following crucial lemma.
+
+\begin{lemma}\label{OI Grobner} The category $\textbf{OI}_d$ is Gr\"{o}bner.
+\end{lemma}
+\begin{proof}
+Recall from definition \ref{grobnercat} that a category $\C=\textbf{OI}_d$ is a Grobner category if (i) $\C$ is a directed category, (ii) $\C_x$ is orderable, and (iii) $|C_x|$ is noetherian. The proof of (i) is obvious, given that the only injective, order preserving endomorphism is the identity. Both (ii) and (iii) can be proven by constructing an isomorphism between the posets $|\C_x|$ and $\mathcal{L}$: For an object of $\C_x$, $(f,g)\in \Hom_{\C}([n],[m])$, define a map $h:[m]\to\Sigma$ such that
+\begin{align} h(x)=\begin{cases} 0, \quad x\in f([n]);\\
+																	g(x), \quad x\in [m]\setminus f([n]).
+									\end{cases}
+\end{align}
+It is clear that the pair $(f,g)$ can be recovered from the function $h$ since $f$ is injective and order preserving, and $h$ is a word in $\mathcal{L}$ since it has precisely $n$ zeros. Thus, this construction gives rise to the isomorphism $i:|\C_x|\to \mathcal{L}$ where $i((f_i,g_j))=h_{i,j}$. Since the order on $\mathcal{L}$ restricts to an admissible order on $|\C_x|$, the results of (ii) and (iii) follow. 
+\end{proof}
+
+
+
+\begin{theorem} The forgetful functor $\phi:\textbf{OI}_d\to\textbf{FI}_d$ is an $\mathcal{F}$-functor. In particular, $\textbf{FI}_d$ is quasi-Gr\"{o}bner.
+\end{theorem}
+\begin{proof}
+
+$\phi$ sends a totally ordered set to its underlying set, forgetting the order on it. Thus, for an object $(y,\preceq)$ of $\textbf{OI}_d$, we have 
+\[\phi((y,\preceq))=y.\]
+Let $x=[n]$ be an object of $\textbf{FI}_d$ and let $f:x\to y$ be a morphism. To demonstrate that $\phi$ is an $\mathcal{F}$-functor, we must show that we can factor $f$ through finitely many morphisms $f_i:x\to y_i$. Considerthe permutation $\sigma_i\in S_n$, the symmetric group on $n$ elements. Then $\sigma_i:x\to x$ acts as an injective function, permuting the elements of $x$. There are $n!$ such permutations in $S_n$, so by letting $y_1,...,y_{n!}$ all be equal to $x$, we see that $f$ factors through $\sigma_i$:
+
+\begin{figure}[htb]
+\centering
+\begin{tikzcd}
+x\arrow{r}{\sigma_i}\arrow{dr}{f}& x=y_i \arrow{d}{f^\prime}\\
+&y
+\end{tikzcd}
+\end{figure}
+
+
+
+where $f^\prime$ is an order preserving injection. Thus, $f=\phi(f^\prime)\circ \sigma_i$, showing that $\phi$ is an $\mathcal{F}$-functor. Finally, by definition \ref{grobnercat} and the previous lemma, $\textbf{FI}_d$ is quasi-Gr\"{o}bner. 
+
+\end{proof}
+
+
+
+We may now state the final result of the paper, which follows directly from Theorem 6.2.2 and Corollary 4.4.1.
+
+\begin{corollary} If \textbf{k} is left-noetherian, then $\Rep_k(\textbf{FI}_d)$ is noetherian.
+\end{corollary}
+
+\chapter{References}
+
+[1]
+
+[2]
+
+
+
+
+\end{document}
+
